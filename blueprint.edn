@@ -1,0 +1,32 @@
+{:itonami.blueprint/id "cloud-itonami-isic-1520"
+ :itonami.blueprint/name "Manufacture of footwear"
+ :itonami.blueprint/isic-rev5 "1520"
+ :itonami.blueprint/domain :footwear/manufacturing
+ :itonami.blueprint/license "AGPL-3.0-or-later"
+ :itonami.blueprint/social-impact [:worker-safety :labor-standards :materials-traceability]
+ :itonami.blueprint/governor :footwear-plant-operations-governor
+ :itonami.blueprint/robotics true
+ :itonami.blueprint/required-technologies [:robotics :identity :forms :dmn :bpmn :audit-ledger :cae]
+ :itonami.blueprint/status :public-oss
+ :itonami.blueprint/maturity :implemented
+ :itonami.blueprint/implemented-slice
+ "FootwearAdvisor ⊣ Footwear Plant Operations Governor, langgraph-clj
+ StateGraph, append-only audit ledger. A plant OPERATIONS COORDINATION
+ actor for footwear manufacturing (cutting, lasting, assembly lines,
+ sole molding) -- not direct cutting/lasting/assembly-line-equipment
+ operation authority. Four ops (`:log-production-batch` /
+ `:schedule-maintenance` / `:flag-quality-concern` /
+ `:coordinate-shipment`), all `:effect :propose` only. Ten concrete
+ governor checks elaborate this blueprint's four HARD invariants:
+ propose-only effect, closed op allowlist, closed proposal-effect
+ allowlist (no direct cutting/lasting/assembly-line-equipment
+ control), permanent direct-operate block, independent equipment
+ verification/registration before maintenance scheduling, independent
+ batch verification/registration before shipment coordination,
+ independent shipment-volume recompute against the batch's own logged
+ volume, double-schedule guard, quality-grade validation, and
+ defect-rate plausibility validation. Quality-concern flagging
+ (materials-defect / labor-safety / labeling-compliance) ALWAYS
+ escalates to a human plant supervisor; `:log-production-batch` is the
+ only op eligible to auto-commit, and only at phase 3 when
+ governor-clean."}
