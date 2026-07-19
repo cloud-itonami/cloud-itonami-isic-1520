@@ -1,0 +1,44 @@
+name: regenerate-console
+on:
+  schedule:
+    - cron: '11 21 * * *'   # off-minute nightly slot, pre-assigned collision-free (Wave5 iteration 18) against all other cloud-itonami-* regenerate.yml cron slots
+  workflow_dispatch: {}
+permissions:
+  contents: write
+jobs:
+  regenerate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          path: orgs/cloud-itonami/cloud-itonami-isic-1520
+      - uses: actions/checkout@v4
+        with: {repository: kotoba-lang/langchain, path: orgs/kotoba-lang/langchain}
+      - uses: actions/checkout@v4
+        with: {repository: kotoba-lang/langgraph, path: orgs/kotoba-lang/langgraph}
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: DeLaGuardo/setup-clojure@13.0
+        with: { cli: latest }
+      - name: regenerate through the real actor
+        working-directory: orgs/cloud-itonami/cloud-itonami-isic-1520
+        run: clojure -M:dev:render-html
+      - name: verify (real output, not scaffolding)
+        working-directory: orgs/cloud-itonami/cloud-itonami-isic-1520
+        run: |
+          grep -q 'footwearops.render-html' docs/samples/operator-console.html
+          grep -q '<tbody>' docs/samples/operator-console.html
+          test "$(wc -l < docs/samples/operator-console.html)" -gt 30
+          echo "operator console sanity ok"
+      - name: commit when changed
+        working-directory: orgs/cloud-itonami/cloud-itonami-isic-1520
+        run: |
+          if ! git diff --quiet docs/; then
+            git config user.name "regenerate-console[bot]"
+            git config user.email "noreply@github.com"
+            git add docs/
+            git commit -m "chore(console): nightly regeneration through the real actor"
+            git push
+          else
+            echo "console unchanged"
+          fi
