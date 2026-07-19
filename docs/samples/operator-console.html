@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>footwearops.render-html -- Footwear Plant Operations Governor operator console</title>
+<style>
+table { width: 100%; border-collapse: collapse; font-size: 14px; }
+.ok { color: #137a3f; }
+body { font-family: system-ui,-apple-system,sans-serif; margin: 0; color: #1a1a1a; background: #fafafa; }
+header.bar { display: flex; align-items: center; gap: 12px; padding: 12px 20px; background: #fff; border-bottom: 1px solid #e5e5e5; }
+th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #f0f0f0; }
+h2 { margin-top: 0; font-size: 15px; }
+.warn { color: #b25c00; background: #fff8e1; padding: 2px 6px; border-radius: 4px; }
+main { max-width: 980px; margin: 24px auto; padding: 0 20px; }
+header.bar h1 { font-size: 18px; margin: 0; font-weight: 600; }
+.muted { color: #888; font-size: 13px; }
+.critical { color: #fff; background: #b3261e; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
+.card { background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+.err { color: #b3261e; background: #fbe9e7; padding: 2px 6px; border-radius: 4px; }
+th { font-weight: 600; color: #555; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
+header.bar .badge { margin-left: auto; font-size: 12px; color: #666; }
+code { font-size: 12px; background: #f4f4f4; padding: 1px 4px; border-radius: 3px; }
+</style>
+</head>
+<body>
+<header class="bar"><h1>Footwear Plant Operations Governor -- Operator Console</h1><span class="badge">ISIC 1520 &middot; phase 3 (supervised-auto)</span></header>
+<main>
+<div class="card">
+<h2>Production batches</h2>
+<table>
+<thead><tr>
+<th>id</th><th>style</th><th>grade</th><th>volume (pairs)</th><th>defect rate</th>
+<th>verified?</th><th>registered?</th><th>shipped (pairs)</th><th>status</th>
+</tr></thead>
+<tbody>
+<tr><td><code>batch-001</code></td><td>running-shoe-v3</td><td><code>:grade-a</code></td><td>50000.0</td><td>2.0%</td><td>yes</td><td>yes</td><td>15000.0</td><td class="ok">committed</td></tr>
+<tr><td><code>batch-002</code></td><td>canvas-sneaker-classic</td><td><code>:grade-b</code></td><td>8000.0</td><td>5.0%</td><td>yes</td><td>yes</td><td>7500.0</td><td class="muted">no activity</td></tr>
+<tr><td><code>batch-003</code></td><td>leather-boot-heritage</td><td><code>:irregular</code></td><td>60000.0</td><td>12.0%</td><td><span class="critical">no</span></td><td><span class="critical">no</span></td><td>0.0</td><td class="muted">no activity</td></tr>
+</tbody></table>
+</div>
+<div class="card">
+<h2>Equipment</h2>
+<table>
+<thead><tr>
+<th>id</th><th>kind</th><th>verified?</th><th>registered?</th><th>last maintenance</th><th>status</th>
+</tr></thead>
+<tbody>
+<tr><td><code>equip-001</code></td><td><code>:cutting-press</code></td><td>yes</td><td>yes</td><td>2026-05-01</td><td class="muted">no activity</td></tr>
+<tr><td><code>equip-002</code></td><td><code>:injection-molder</code></td><td><span class="critical">no</span></td><td><span class="critical">no</span></td><td>&mdash;</td><td class="muted">no activity</td></tr>
+</tbody></table>
+</div>
+<div class="card">
+<h2>Draft records (maintenance-schedule / shipment-coordination)</h2>
+<table>
+<thead><tr>
+<th>record_id</th><th>kind</th><th>subject_id</th><th>equipment/batch</th>
+</tr></thead>
+<tbody>
+<tr><td><code>MNT-000000</code></td><td>maintenance-schedule-draft</td><td><code>mnt-1</code></td><td><code>equip-001</code></td></tr>
+<tr><td><code>SHP-000000</code></td><td>shipment-coordination-draft</td><td><code>ship-1</code></td><td>&mdash;</td></tr>
+</tbody></table>
+</div>
+<div class="card">
+<h2>Action gate (footwearops.phase &middot; always-escalate-ops)</h2>
+<table>
+<thead><tr>
+<th>op</th><th>phase-3 write allowed?</th><th>auto-eligible?</th><th>always escalates (high-stakes)?</th>
+</tr></thead>
+<tbody>
+<tr><td><code>:coordinate-shipment</code></td><td>yes</td><td>no</td><td>no</td></tr>
+<tr><td><code>:flag-quality-concern</code></td><td>yes</td><td>no</td><td><span class="critical">yes</span></td></tr>
+<tr><td><code>:log-production-batch</code></td><td>yes</td><td><span class="ok">yes</span></td><td>no</td></tr>
+<tr><td><code>:schedule-maintenance</code></td><td>yes</td><td>no</td><td>no</td></tr>
+</tbody></table>
+</div>
+<div class="card">
+<h2>Audit ledger</h2>
+<table>
+<thead><tr>
+<th>t</th><th>op</th><th>subject</th><th>disposition</th><th>basis / rule</th>
+</tr></thead>
+<tbody>
+<tr><td>:committed</td><td><code>:log-production-batch</code></td><td><code>batch-001</code></td><td class="ok">:commit</td><td>quality-grade, last-assessed</td></tr>
+<tr><td>:committed</td><td><code>:flag-quality-concern</code></td><td><code>concern-1</code></td><td class="ok">:commit</td><td>equip-001</td></tr>
+<tr><td>:committed</td><td><code>:schedule-maintenance</code></td><td><code>mnt-1</code></td><td class="ok">:commit</td><td>equip-001</td></tr>
+<tr><td>:committed</td><td><code>:coordinate-shipment</code></td><td><code>ship-1</code></td><td class="ok">:commit</td><td>batch-001</td></tr>
+<tr><td>:governor-hold</td><td><code>:schedule-maintenance</code></td><td><code>mnt-2</code></td><td class="err">:hold</td><td>equipment-not-verified</td></tr>
+<tr><td>:governor-hold</td><td><code>:coordinate-shipment</code></td><td><code>ship-2</code></td><td class="err">:hold</td><td>batch-not-verified</td></tr>
+<tr><td>:governor-hold</td><td><code>:coordinate-shipment</code></td><td><code>ship-3</code></td><td class="err">:hold</td><td>shipment-volume-exceeded</td></tr>
+<tr><td>:governor-hold</td><td><code>:schedule-maintenance</code></td><td><code>mnt-3</code></td><td class="err">:hold</td><td>line-operate-blocked</td></tr>
+</tbody></table>
+</div>
+</main>
+</body></html>
