@@ -1,0 +1,52 @@
+name: CI
+
+# This project's deps.edn pins langgraph and langchain via in-monorepo
+# :local/root paths (../../kotoba-lang/langgraph, .../langchain), and
+# the :dev alias re-pins langchain the same way (redundant, kept for
+# sibling-repo parity). Those don't resolve on a bare single-repo
+# checkout, so the test job reconstructs the workspace layout by
+# checking out both siblings (all PUBLIC) into the expected relative
+# paths -- no token needed. Same pattern as this repo's own
+# regenerate.yml, and as cloud-itonami-isic-869 / cloud-itonami-isic-0115.
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: DeLaGuardo/setup-clojure@13.4
+        with: { cli: latest }
+      - name: clj-kondo (errors fail the build)
+        run: clojure -M:lint
+
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with: { path: orgs/cloud-itonami/cloud-itonami-isic-1520 }
+      - uses: actions/checkout@v4
+        with:
+          repository: kotoba-lang/langgraph
+          path: orgs/kotoba-lang/langgraph
+      - uses: actions/checkout@v4
+        with:
+          repository: kotoba-lang/langchain
+          path: orgs/kotoba-lang/langchain
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "21" }
+      - uses: DeLaGuardo/setup-clojure@13.4
+        with: { cli: latest }
+      - name: test (governor · operation · phase · registry · store contract, real compiled StateGraph end-to-end)
+        working-directory: orgs/cloud-itonami/cloud-itonami-isic-1520
+        run: clojure -M:dev:test
+      - name: demo runner (compiled StateGraph, end-to-end)
+        working-directory: orgs/cloud-itonami/cloud-itonami-isic-1520
+        run: clojure -M:dev:run
