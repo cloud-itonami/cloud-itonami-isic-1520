@@ -6,7 +6,8 @@
 
   Usage: `clojure -M:dev:render-html [out-file]`
   (default `docs/samples/operator-console.html`)."
-  (:require [clojure.string :as str]
+  (:require [jp-go-dds.skin]
+            [clojure.string :as str]
             [footwearops.store :as store]
             [footwearops.operation :as op]
             [footwearops.phase :as phase]
@@ -286,7 +287,9 @@ code { font-size: 12px; background: #f4f4f4; padding: 1px 4px; border-radius: 3p
    "<!doctype html>\n"
    "<html lang=\"en\">\n<head>\n<meta charset=\"utf-8\">\n"
    "<title>footwearops.render-html -- Footwear Plant Operations Governor operator console</title>\n"
-   "<style>\n" css "\n</style>\n"
+   "<style>"
+   (jp-go-dds.skin/dds+skin)
+   "</style>\n"
    "</head>\n<body>\n"
    "<header class=\"bar\"><h1>Footwear Plant Operations Governor -- Operator Console</h1>"
    "<span class=\"badge\">ISIC 1520 &middot; phase " phase/default-phase " (" (:label (get phase/phases phase/default-phase)) ")</span>"
