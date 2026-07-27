@@ -254,7 +254,15 @@
   (when (= op :coordinate-shipment)
     (let [{:keys [batch-id volume-pairs]} (:value proposal)
           b (and batch-id (store/batch st batch-id))]
-      (when (and b (registry/shipment-volume-exceeded? b volume-pairs))
+      (cond
+        ;; No batch, no recorded capacity, or no stated amount: the headroom
+        ;; cannot be computed, so it is not headroom. This used to fall
+        ;; through as "not over capacity" and ship.
+        (not (registry/shipment-volume-exceeded-checkable? b volume-pairs))
+        [{:rule :shipment-volume-exceeded
+          :detail "生産量/既存出荷実績/申請量のいずれかが数値として確定できない -- 空き容量を検算できないため出荷しない"}]
+
+        (registry/shipment-volume-exceeded? b volume-pairs)
         [{:rule :shipment-volume-exceeded
           :detail (str batch-id " の記録済み生産量(" (:volume-pairs b)
                        "足)を、既存出荷実績(" (:shipped-volume-pairs b 0.0)
