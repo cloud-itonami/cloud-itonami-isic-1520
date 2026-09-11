@@ -49,16 +49,16 @@ Classic governed-actor pattern (`footwearops.operation/build`, a langgraph-clj S
 
 ```bash
 # Run tests (top-level deps.edn already pins langgraph+langchain local/root)
-clojure -M:test
+kbb -M:test
 
 # Run tests via the workspace :dev override alias (equivalent, kept for sibling-repo parity)
-clojure -M:dev:test
+kbb -M:dev:test
 
 # Run the demo
-clojure -M:dev:run
+kbb -M:dev:run
 
 # Lint
-clojure -M:lint
+kbb -M:lint
 ```
 
 ## Status

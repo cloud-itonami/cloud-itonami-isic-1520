@@ -22,7 +22,7 @@ jobs:
         with: { cli: latest }
       - name: regenerate through the real actor
         working-directory: orgs/cloud-itonami/cloud-itonami-isic-1520
-        run: clojure -M:dev:render-html
+        run: kbb -M:dev:render-html
       - name: verify (real output, not scaffolding)
         working-directory: orgs/cloud-itonami/cloud-itonami-isic-1520
         run: |

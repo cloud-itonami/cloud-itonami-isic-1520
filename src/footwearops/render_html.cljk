@@ -4,7 +4,7 @@
   Drives the REAL actor stack (footwearops.operation -> footwearops.governor -> footwearops.store).
   No invented numbers, no timestamps, byte-identical across reruns.
 
-  Usage: `clojure -M:dev:render-html [out-file]`
+  Usage: `kbb -M:dev:render-html [out-file]`
   (default `docs/samples/operator-console.html`)."
   (:require [jp-go-dds.skin]
             [kotoba.lang.text :as str]
