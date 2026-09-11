@@ -5,7 +5,7 @@
  ;; standalone (forkable outside the workspace); the :local/root paths
  ;; only resolve inside the monorepo checkout -- a standalone fork
  ;; should override them with git coordinates. langchain is pinned here
- ;; directly (not only under :dev) so a bare `clojure -M:test` works
+ ;; directly (not only under :dev) so a bare `kbb -M:test` works
  ;; offline inside the monorepo checkout without depending on
  ;; langgraph's own transitive git/sha pin being fetchable.
  :deps {
@@ -27,9 +27,9 @@ io.github.kotoba-lang/langgraph
   :dev {:override-deps
         {io.github.kotoba-lang/langchain
          {:local/root "../../kotoba-lang/langchain"}}}
-  ;; clojure -M:dev:run  -> drive the demo through one OperationActor
+  ;; kbb -M:dev:run  -> drive the demo through one OperationActor
   :run {:main-opts ["-m" "footwearops.sim"]}
-  ;; clojure -M:dev:render-html -> build-time docs/samples/operator-console.html
+  ;; kbb -M:dev:render-html -> build-time docs/samples/operator-console.html
   :render-html {:main-opts ["-m" "footwearops.render-html"]}
   :test {:extra-paths ["test"]
          :extra-deps {io.github.cognitect-labs/test-runner
