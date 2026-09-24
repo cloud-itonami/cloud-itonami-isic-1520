@@ -1,0 +1,32 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:dev:physics` runs it.
+;;
+;; README has no "Robotics premise" section. The footwear plant cuts,
+;; lasts, assembles and moulds. Its physical work here: vulcanising a rubber
+;; outsole in a heated mould, and moving a lasted shoe between assembly
+;; stations.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isic-1520"
+ :cases
+ [{:id :outsole-vulcanise
+   :kind :thermal
+   :procedure "a rubber outsole cures between the heated halves of a vulcanising mould until its middle reaches curing temperature; swept :thickness-m is HALF the thickness (heated face to mid-plane), mid-plane adiabatic by symmetry, so the back face is the middle"
+   :params {:conductivity-w-mk 0.25 :density-kg-m3 1150.0 :specific-heat-j-kgk 1900.0
+            :t0-c 25.0 :t-hot-c 160.0 :h-front-w-m2k 1000.0 :t-back-ambient-c 25.0 :h-back-w-m2k 0.0
+            :threshold-c 150.0 :duration-s 1200.0 :nodes 11}
+   :sweep {:param :thickness-m :values [0.002 0.004 0.006 0.008 0.010]}
+   :quantity :time-to-threshold-s
+   :limit {:max 480.0 :basis "estimate: 8-minute press cycle for a vulcanised outsole"}
+   :boundary {:lo 0.001 :hi 0.02}}
+  {:id :lasted-shoe-transfer
+   :kind :manipulator
+   :procedure "arm lifts a lasted shoe (shoe on its last) from the lasting machine onto the sole-attaching conveyor"
+   :params {:l1-m 0.40 :l2-m 0.35 :m1-kg 3.5 :m2-kg 2.5
+            :from [0.45 0.05] :to [0.15 0.50] :duration-s 1.2 :steps 400}
+   :sweep {:param :payload-kg :values [0.5 1.0 1.5 2.0 2.5]}
+   :quantity :peak-tau1-nm
+   :limit {:max 25.0 :basis "estimate: continuous shoulder torque of a light (~3 kg class) collaborative arm"}
+   :boundary {:lo 0.1 :hi 15.0}}]}
