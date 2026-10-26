@@ -6,9 +6,15 @@
 {:deps {
         ;; kotoba.robotics.process: the process-physics solvers and probe this
         ;; repo's physics.edn runs on (physical-AI bot, scripts/physical-ai-bots).
-        io.github.kotoba-lang/robotics {:local/root "../../kotoba-lang/robotics"}
+        io.github.kotoba-lang/robotics
+        {:local/root "../../kotoba-lang/kotoba/lib/kotoba.robotics"}
 
         ;; kotoba.test (clojure.test-compatible surface), not clojure.test --
         ;; scripts/migrate-clojure-test-to-kotoba-test.cljk. Explicit floor.
-        io.github.kotoba-lang/test {:git/url "https://github.com/kotoba-lang/test.git"
-                                    :git/sha "2ab4885f99fd25552d380d0f6b0b54c5a72eb7ae"}io.github.kotoba-lang/edn {:git/sha "79dba32c8892058842c57783f06a2dfe4601aeb0"}}}
+        io.github.kotoba-lang/test
+        {:git/url "https://github.com/kotoba-lang/kotoba.git"
+         :git/sha "96a82d9612d7f3699f93323bad0c68355b8f7cc9"
+         :deps/root "lib/kotoba.test"}io.github.kotoba-lang/edn
+        {:git/url "https://github.com/kotoba-lang/kotoba.git"
+         :git/sha "96a82d9612d7f3699f93323bad0c68355b8f7cc9"
+         :deps/root "lib/kotoba.edn"}}}
